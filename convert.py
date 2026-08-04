@@ -99,8 +99,17 @@ def litematic_to_schem_final(input_file, output_file):
         ry = ey - min_y
         rz = ez - min_z
         e_tag['Pos'] = List[Double]([Double(rx), Double(ry), Double(rz)])
+        
+        # Sponge V2 format: 'Id' tag required, remove 'id' and hardcoded 'UUID' so WorldEdit generates fresh UUIDs
         if 'id' in e_tag:
             e_tag['Id'] = e_tag['id']
+            del e_tag['id']
+        elif 'Id' not in e_tag:
+            e_tag['Id'] = String(f"minecraft:{e.id}")
+            
+        if 'UUID' in e_tag:
+            del e_tag['UUID']
+
         if 'TileX' in e_tag:
             e_tag['TileX'] = Int(int(e_tag['TileX']) - min_x)
             e_tag['TileY'] = Int(int(e_tag['TileY']) - min_y)
