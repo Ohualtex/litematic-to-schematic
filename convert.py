@@ -1,7 +1,7 @@
 import os
 import argparse
 from litemapy import Schematic
-from nbtlib import File, Compound, Int, Short, ByteArray, IntArray, List
+from nbtlib import File, Compound, Int, Short, ByteArray, IntArray, List, Double
 
 def litematic_to_schem_final(input_file, output_file):
     if not os.path.exists(input_file):
@@ -25,6 +25,10 @@ def litematic_to_schem_final(input_file, output_file):
     x_coords = sorted(list(reg.xrange()))
     y_coords = sorted(list(reg.yrange()))
     z_coords = sorted(list(reg.zrange()))
+
+    min_x = min(x_coords)
+    min_y = min(y_coords)
+    min_z = min(z_coords)
 
     # WorldEdit index ordering: (Y * Length + Z) * Width + X
     block_indices = [0] * (width * height * length)
@@ -71,6 +75,39 @@ def litematic_to_schem_final(input_file, output_file):
                 block_data.append(byte)
                 break
 
+    print("Processing BlockEntities (container inventories, signs, etc.)...")
+    block_entities = List[Compound]()
+    for te in reg.tile_entities:
+        te_tag = Compound()
+        for k, v in te.data.items():
+            te_tag[k] = v
+        x_idx, y_idx, z_idx = te.position
+        te_tag['Pos'] = IntArray([Int(x_idx), Int(y_idx), Int(z_idx)])
+        if 'id' in te_tag:
+            te_tag['Id'] = te_tag['id']
+        block_entities.append(te_tag)
+    print(f"Processed {len(block_entities)} block entities.")
+
+    print("Processing Entities (minecarts, armor stands, item frames, etc.)...")
+    entities = List[Compound]()
+    for e in reg.entities:
+        e_tag = Compound()
+        for k, v in e.data.items():
+            e_tag[k] = v
+        ex, ey, ez = e.position
+        rx = ex - min_x
+        ry = ey - min_y
+        rz = ez - min_z
+        e_tag['Pos'] = List[Double]([Double(rx), Double(ry), Double(rz)])
+        if 'id' in e_tag:
+            e_tag['Id'] = e_tag['id']
+        if 'TileX' in e_tag:
+            e_tag['TileX'] = Int(int(e_tag['TileX']) - min_x)
+            e_tag['TileY'] = Int(int(e_tag['TileY']) - min_y)
+            e_tag['TileZ'] = Int(int(e_tag['TileZ']) - min_z)
+        entities.append(e_tag)
+    print(f"Processed {len(entities)} entities.")
+
     print("Building Sponge V2 NBT tree structure...")
     palette_nbt = Compound({k: Int(v) for k, v in palette.items()})
 
@@ -83,7 +120,8 @@ def litematic_to_schem_final(input_file, output_file):
         'PaletteMax': Int(palette_max),
         'Palette': palette_nbt,
         'BlockData': ByteArray(block_data),
-        'BlockEntities': List[Compound](), 
+        'BlockEntities': block_entities,
+        'Entities': entities,
         'Metadata': Compound({
             'WEOffsetX': Int(0),
             'WEOffsetY': Int(0),
