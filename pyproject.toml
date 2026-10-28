@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "litematic-to-schematic"
+version = "1.0.0"
+description = "Convert Minecraft Litematica (.litematic) schematics directly to WorldEdit Sponge V2 (.schem) format."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Ohualtex" }
+]
+keywords = ["minecraft", "litematica", "litematic", "schematic", "schem", "worldedit", "sponge"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "litemapy",
+    "nbtlib",
+]
+
+[project.urls]
+Homepage = "https://github.com/Ohualtex/litematic-to-schematic"
+Repository = "https://github.com/Ohualtex/litematic-to-schematic"
+Issues = "https://github.com/Ohualtex/litematic-to-schematic/issues"
+
+[project.scripts]
+litematic-to-schematic = "litematic_to_schematic.cli:main"
+litematic2schem = "litematic_to_schematic.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
