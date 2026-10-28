@@ -8,51 +8,61 @@
 > Bu dokümanı başka bir dilde okuyun:  
 > 🇺🇸 **[English](README.md)**
 
-Minecraft **Litematica** (`.litematic`) yapı dosyalarını doğrudan modern **WorldEdit / FastAsyncWorldEdit (FAWE)** uyumlu **Sponge V2** (`.schem`) formatına dönüştüren hızlı, güvenilir ve tam uyumlu bir Python CLI aracıdır.
+Minecraft **Litematica** (`.litematic`) yapı dosyalarını doğrudan **WorldEdit / FastAsyncWorldEdit (FAWE)** uyumlu **Sponge V2** (`.schem`) formatına dönüştüren hızlı ve güvenilir bir Python CLI aracı ve kütüphanesidir.
 
 ---
 
 ## 🎯 Projenin Amacı
 
-Minecraft'ta Fabric/Quilt tabanlı **Litematica** modu tarafından kullanılan `.litematic` formatındaki yapı şablonları, Forge/Paper/Spigot sunucularında çalışan **WorldEdit** veya **FAWE** eklentileriyle doğrudan yüklenemez. 
+Minecraft'ta Fabric/Quilt tabanlı **Litematica** modu tarafından kullanılan `.litematic` formatındaki yapı şablonları, Forge, NeoForge, Paper veya Spigot sunucularında çalışan **WorldEdit** veya **FAWE** eklentileriyle doğrudan yüklenemez.
 
-Bu araç, herhangi bir ek Minecraft istemcisi açmaya gerek kalmadan Litematica dosyalarını doğrudan NBT seviyesinde işleyerek tam uyumlu `.schem` dosyalarına dönüştürmenizi sağlar.
-
----
-
-## 🧱 Minecraft Sürüm Uyumluluğu
-
-Bu araç **Minecraft 1.13 ve üzeri tüm modern sürümler** (1.16, 1.20, 26.2 vb.) ile tam uyumludur.
-
-### Alt Sınır Neden 1.13?
-Minecraft, 1.13 sürümü ile birlikte kod yapısında devasa bir değişikliğe gitti (**The Flattening / Düzleştirme**). Bu sürümden önce bloklar rakamlarla (ID) ve meta verilerle ifade ediliyordu (Örneğin kırmızı yün için `35:14` kullanılıyordu). 1.13 ile birlikte tüm bloklar metin formatına (Örn: `minecraft:red_wool`) geçirildi. Geliştirdiğimiz betik, modern **Sponge V2** standartlarını kullanarak metin tabanlı bir palet oluşturduğu için 1.12.2 ve önceki sürümlerdeki rakamsal sistemi desteklemez.
-
-### Üst Sınır Neden Yok (Geleceğe Uyumlu / Future-Proof)?
-Python betiğini yazarken blok isimlerini koda sabit kodlama (hardcode) yöntemiyle elle girmedik. Betik, Litematica dosyasını okurken karşısına çıkan tüm blok kimliklerini (`block.id` ve `block.properties`) o an **dinamik olarak algılayıp** yeni palete kopyalar. Dolayısıyla oyuna 26.2 veya daha sonraki bir sürümde yepyeni bir blok eklendiğinde bile, betik bu bloğun ismini bozmadan doğrudan NBT (Named Binary Tag) yapısına yazar ve WorldEdit'in tanımasını sağlar.
+Bu araç, herhangi bir Minecraft istemcisi açmaya gerek kalmadan Litematica dosyalarını doğrudan NBT seviyesinde işleyerek standart Sponge V2 `.schem` dosyalarına dönüştürmenizi sağlar.
 
 ---
 
 ## ✨ Öne Çıkan Özellikler
 
-- 📦 **Sponge V2 NBT Standardı Tam Desteği**: WorldEdit v7+ ve FAWE standartlarına tam uyumlu NBT veri ağacı yapısı (`Version: 2`, `DataVersion: 2586`).
-- 🔢 **LEB128 VarInt Bayt Kodlaması**: Blok indeksleri Sponge V2 standartlarının gerektirdiği şekilde dinamik VarInt (LEB128) formatında bayt dizisine dönüştürülür.
-- 📐 **Otomatik Negatif Koordinat Düzeltmesi**: Litematica seçimlerinde negatif eksen yönlü kaydedilmiş bölgeler otomatik olarak sıralanır ve WorldEdit eksen düzenine (`(Y * Uzunluk + Z) * Genişlik + X`) hizalanır.
-- 🎨 **Gelişmiş Blok Durum (BlockState) & Palet Yönetimi**: Blokların `minecraft:` ön ekleri, merdiven, yön, su/cam durumları ve tüm blok özellikleri eksiksiz olarak korunur ve paletlenir.
-- ⚡ **Hızlı ve Kolay Kullanım**: Hem gelişmiş kullanıcılar için komut satırı (CLI) arayüzü hem de tek tıkla çalıştırma sunan Windows Toplu İş Dosyası (`start.bat`) desteği.
+- 🧩 **Çoklu Bölge (Multi-Region) Birleştirme ve Çakışma Politikaları**: `.litematic` içindeki tüm alt bölgeleri kapsayan küresel sınırlayıcı kutuyu (bounding box) otomatik hesaplar, bölge ofsetlerini hizalar, hava bloklarının dolu blokları ezmesini engeller ve çakışma politikası sunar (`--on-overlap overwrite|keep-first|error`).
+- 📦 **Sponge V2 NBT Yapısı ve Dinamik `DataVersion`**: Girdi dosyasındaki `MinecraftDataVersion` bilgisini korur (yalnızca eksikse `2586` varsayılanını kullanır) ve Sponge V2 (`Version: 2`) NBT ağacı üretir.
+- 🧰 **BlockEntities & Entities Aktarımı**: Sandık, varil, shulker kutusu, tabela gibi blok varlıklarını (`BlockEntities`) ve zırh askısı, eşya çerçevesi, tablo, vagon gibi varlıkları (`Entities`) küresel koordinat hizalaması, `TileX/Y/Z` dönüşümü ve `UUID`/`Id` temizliği ile korur.
+- 🔧 **Modlu ve Vanilla Namespace Koruması**: Modlu blok kimliklerini (örn. `create:brass_casing`, `ae2:controller[state=online]`) bozmadan korur; yalnızca namespace içermeyen kimliklere `minecraft:` öneki ekler.
+- 🔢 **LEB128 VarInt Bayt Kodlaması**: Blok palet indekslerini işaretli 8-bit NBT `ByteArray` akışına dinamik LEB128 VarInt formatında kodlar ve `128` üstü geniş blok paletlerini sorunsuz destekler.
+- 📐 **Negatif Koordinat Eksen Hizalaması**: Litematica seçimlerinde negatif eksen yönlü kaydedilmiş bölgeleri otomatik olarak sıralar ve WorldEdit eksen düzenine (`(Y * Uzunluk + Z) * Genişlik + X`) hizalar.
+
+---
+
+## 🧱 Minecraft Sürüm Uyumluluğu ve Kapsam
+
+Bu araç **Minecraft 1.13+ şemalarını** (1.13'ten 1.20, 1.21+ vb. sürümlere kadar) destekler.
+
+### Alt Sınır Neden 1.13?
+Minecraft 1.13 (**"The Flattening / Düzleştirme"**) ile birlikte bloklar sayısal ID ve meta verilerden (örn. `35:14`) metin tabanlı blok durumlarına (örn. `minecraft:red_wool`) geçmiştir. Sponge V2 formatı metin tabanlı palet kullandığı için 1.12.2 ve öncesindeki sayısal ID sistemini desteklemez.
+
+### Yeni Sürümler ve Modlu Bloklar Nasıl Çalışır?
+Blok kimlikleri ve özellikleri (`block.id` ve `block.properties`), girdi dosyasındaki `MinecraftDataVersion` etiketiyle birlikte çalışma anında dinamik olarak okunur; koda sabitlenmiş bir blok listesi bulunmaz.
+
+### Bilinen Format Sınırlamaları
+- **Sürümler Arası Blok ID Dönüşümü Yapılmaz**: Dönüştürücü, girdi şemasının `DataVersion` değerini ve blok isimlerini olduğu gibi korur. Örneğin 1.21'e ait yeni bir bloğu içeren şemayı 1.16 sunucusuna yüklemek, o bloğu eski sürüme otomatik uyarlamaz.
+- **Zamanlanmış Tickler (`PendingTicks`)**: Litematica'daki `PendingBlockTicks` ve `PendingFluidTicks` verilerinin WorldEdit Sponge V2 okuyucusunda karşılığı olmadığından, bu veriler bulunduğunda konsolda bilgilendirme mesajı verilerek atlanır.
+- **Boyut Sınırları**: Sponge V2 formatında `Width`, `Height` ve `Length` alanları 16-bit işaretli `Short` tipinde tutulduğu için birleşik şema boyutu her eksende en fazla `32.767` blok olabilir.
 
 ---
 
 ## 📥 Kurulum
 
-Dönüştürücüyü kullanabilmek için bilgisayarınızda **Python 3.8+** yüklü olmalıdır.
+Bilgisayarınızda **Python 3.8+** yüklü olmalıdır.
 
-1. Depoyu klonlayın veya indirin:
+1. Depoyu klonlayın:
    ```bash
-   git clone https://github.com/Ohualtex/Litematic-to-Schematic.git
-   cd Litematic-to-Schematic
+   git clone https://github.com/Ohualtex/litematic-to-schematic.git
+   cd litematic-to-schematic
    ```
 
-2. Gerekli Python kütüphanelerini yükleyin:
+2. Python paketi olarak kurun (önerilen yöntem; `litematic-to-schematic` ve `litematic2schem` komutlarını tanımlar):
+   ```bash
+   pip install .
+   ```
+   Veya doğrudan betik olarak çalıştırmak için yalnızca bağımlılıkları yükleyin:
    ```bash
    pip install -r requirements.txt
    ```
@@ -61,55 +71,63 @@ Dönüştürücüyü kullanabilmek için bilgisayarınızda **Python 3.8+** yük
 
 ## 🚀 Kullanım
 
-Dönüştürücüyü iki farklı şekilde çalıştırabilirsiniz:
-
 ### 1. Komut Satırı (CLI) Üzerinden Kullanım
 
-Temel dönüştürme (Çıktı dosyası girdi dosyasıyla aynı isimde `.schem` olarak oluşturulur):
+Kurulu CLI komutuyla (veya `python convert.py` / `python -m litematic_to_schematic` ile):
 ```bash
-python convert.py ornek_yapi.litematic
+litematic-to-schematic ornek_yapi.litematic
 ```
 
-Özel çıktı dosyası adı belirterek dönüştürme:
+Özel çıktı dosyası adı ve çoklu bölge çakışma politikası belirterek:
 ```bash
-python convert.py ornek_yapi.litematic -o benim_yapim.schem
+litematic2schem ornek_yapi.litematic -o benim_yapim.schem --on-overlap keep-first
 ```
 
 Yardım menüsünü görüntüleme:
 ```bash
-python convert.py --help
+litematic-to-schematic --help
 ```
-
----
 
 ### 2. Windows Toplu İş Betiği (`start.bat`) Üzerinden Kullanım
 
-Komut satırı kullanmak istemiyorsanız, Windows ortamında `start.bat` dosyasını çift tıklatarak çalıştırabilirsiniz.
-
-1. `start.bat` dosyasını çalıştırın.
-2. Açılan pencerede dönüştürmek istediğiniz dosyanın adını girin (Örn: `ev.litematic`).
+1. `start.bat` dosyasını çift tıklatarak çalıştırın.
+2. Açılan pencerede dönüştürmek istediğiniz dosyanın adını girin (örn. `ev.litematic`).
 3. Dönüştürme tamamlandığında aynı klasörde `.schem` dosyanız hazır olacaktır.
+
+### 3. Test Paketini Çalıştırma
+
+```bash
+python -m unittest discover -s tests -v
+```
 
 ---
 
 ## 📁 Proje Yapısı
 
 ```text
-Litematic-to-Schematic/
-├── .gitignore          # Git tarafından yoksayılacak dosyalar
-├── LICENSE             # MIT Lisans belgesi
-├── README.md           # İngilizce Benioku dokümanı (varsayılan)
-├── README_TR.md        # Türkçe Benioku dokümanı
-├── requirements.txt    # Proje bağımlılıkları (litemapy, nbtlib)
-├── convert.py          # Litematica -> Schematic dönüştürücü ana Python kodu
-└── start.bat           # Windows kolay başlatıcı betiği
+litematic-to-schematic/
+├── pyproject.toml                  # PEP 621 paket yapılandırması ve CLI giriş noktaları
+├── requirements.txt                # Çalışma zamanı bağımlılıkları (litemapy, nbtlib)
+├── convert.py                      # Geriye dönük uyumluluk köprüsü (wrapper)
+├── start.bat                       # Windows kolay başlatıcı betiği
+├── README.md                       # İngilizce dokümantasyon (varsayılan)
+├── README_TR.md                    # Türkçe dokümantasyon
+├── LICENSE                         # MIT Lisans belgesi
+├── src/
+│   └── litematic_to_schematic/
+│       ├── __init__.py             # Paket sürümü ve dışa aktarılan API fonksiyonları
+│       ├── __main__.py             # `python -m litematic_to_schematic` giriş noktası
+│       ├── converter.py            # Çekirdek Litematica -> Sponge V2 dönüşüm motoru
+│       └── cli.py                  # Argparse komut satırı arayüzü
+└── tests/
+    └── test_converter.py           # Birim ve entegrasyon test matrisi (T01-T14)
 ```
 
 ---
 
 ## 📜 Lisans
 
-Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır. Dilediğiniz gibi kullanabilir, değiştirebilir ve dağıtabilirsiniz.
+Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
 
 ---
 
