@@ -12,7 +12,7 @@ license = { file = "LICENSE" }
 authors = [
     { name = "Ohualtex" }
 ]
-keywords = ["minecraft", "litematica", "litematic", "schematic", "schem", "worldedit", "sponge"]
+keywords = ["minecraft", "litematica", "litematic", "schematic", "schem", "worldedit", "sponge", "lithetic"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -42,6 +42,8 @@ Issues = "https://github.com/Ohualtex/litematic-to-schematic/issues"
 [project.scripts]
 litematic-to-schematic = "litematic_to_schematic.cli:main"
 litematic2schem = "litematic_to_schematic.cli:main"
+litematic2schematic = "litematic_to_schematic.cli:main"
+lithetic = "litematic_to_schematic.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

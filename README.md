@@ -1,5 +1,6 @@
 # 🛠️ Litematica to Schematic Converter
 
+![PyPI Version](https://img.shields.io/pypi/v/litematic-to-schematic.svg)
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Minecraft Version](https://img.shields.io/badge/minecraft-1.13%2B-orange.svg)
@@ -52,20 +53,18 @@ Block IDs and block state properties (`block.id` and `block.properties`) are par
 
 Ensure you have **Python 3.8+** installed on your system.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Ohualtex/litematic-to-schematic.git
-   cd litematic-to-schematic
-   ```
+### Option 1: Install from PyPI (Recommended)
+```bash
+pip install litematic-to-schematic
+```
+*(This automatically installs the `lithetic`, `litematic-to-schematic`, `litematic2schem`, and `litematic2schematic` CLI commands.)*
 
-2. Install as a Python package (recommended, installs CLI commands `litematic-to-schematic` and `litematic2schem`):
-   ```bash
-   pip install .
-   ```
-   Or install dependencies only for direct script execution:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Option 2: Install from Source
+```bash
+git clone https://github.com/Ohualtex/litematic-to-schematic.git
+cd litematic-to-schematic
+pip install .
+```
 
 ---
 
@@ -73,19 +72,19 @@ Ensure you have **Python 3.8+** installed on your system.
 
 ### 1. Command-Line Interface (CLI)
 
-Using the installed CLI command (or `python convert.py` / `python -m litematic_to_schematic`):
+Using the shorthand `lithetic` command (or `litematic-to-schematic` / `litematic2schem` / `python convert.py`):
 ```bash
-litematic-to-schematic sample_structure.litematic
+lithetic sample_structure.litematic
 ```
 
 Specify a custom output file path and multi-region overlap policy:
 ```bash
-litematic2schem sample_structure.litematic -o my_building.schem --on-overlap keep-first
+lithetic sample_structure.litematic -o my_building.schem --on-overlap keep-first
 ```
 
 Display help menu:
 ```bash
-litematic-to-schematic --help
+lithetic --help
 ```
 
 ### 2. Windows Batch Script (`start.bat`)

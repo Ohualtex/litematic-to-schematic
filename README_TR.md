@@ -1,5 +1,6 @@
 # 🛠️ Litematica to Schematic Converter (Türkçe Dokümantasyon)
 
+![PyPI Version](https://img.shields.io/pypi/v/litematic-to-schematic.svg)
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Minecraft Version](https://img.shields.io/badge/minecraft-1.13%2B-orange.svg)
@@ -52,20 +53,18 @@ Blok kimlikleri ve özellikleri (`block.id` ve `block.properties`), girdi dosyas
 
 Bilgisayarınızda **Python 3.8+** yüklü olmalıdır.
 
-1. Depoyu klonlayın:
-   ```bash
-   git clone https://github.com/Ohualtex/litematic-to-schematic.git
-   cd litematic-to-schematic
-   ```
+### Seçenek 1: PyPI Üzerinden Kurulum (Önerilen)
+```bash
+pip install litematic-to-schematic
+```
+*(Bu işlem `lithetic`, `litematic-to-schematic`, `litematic2schem` ve `litematic2schematic` terminal komutlarını otomatik olarak tanımlar.)*
 
-2. Python paketi olarak kurun (önerilen yöntem; `litematic-to-schematic` ve `litematic2schem` komutlarını tanımlar):
-   ```bash
-   pip install .
-   ```
-   Veya doğrudan betik olarak çalıştırmak için yalnızca bağımlılıkları yükleyin:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Seçenek 2: Kaynak Koddan Kurulum
+```bash
+git clone https://github.com/Ohualtex/litematic-to-schematic.git
+cd litematic-to-schematic
+pip install .
+```
 
 ---
 
@@ -73,19 +72,19 @@ Bilgisayarınızda **Python 3.8+** yüklü olmalıdır.
 
 ### 1. Komut Satırı (CLI) Üzerinden Kullanım
 
-Kurulu CLI komutuyla (veya `python convert.py` / `python -m litematic_to_schematic` ile):
+Kısa `lithetic` komutuyla (veya `litematic-to-schematic` / `litematic2schem` / `python convert.py` ile):
 ```bash
-litematic-to-schematic ornek_yapi.litematic
+lithetic ornek_yapi.litematic
 ```
 
 Özel çıktı dosyası adı ve çoklu bölge çakışma politikası belirterek:
 ```bash
-litematic2schem ornek_yapi.litematic -o benim_yapim.schem --on-overlap keep-first
+lithetic ornek_yapi.litematic -o benim_yapim.schem --on-overlap keep-first
 ```
 
 Yardım menüsünü görüntüleme:
 ```bash
-litematic-to-schematic --help
+lithetic --help
 ```
 
 ### 2. Windows Toplu İş Betiği (`start.bat`) Üzerinden Kullanım
