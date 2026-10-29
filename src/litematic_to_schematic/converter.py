@@ -81,9 +81,9 @@ def _resolve_tile_entity_local_pos(reg, te) -> tuple[int, int, int]:
     cand_reg = (tx - min_x, ty - min_y, tz - min_z)
     cand_store = (tx, ty, tz)
 
-    w, h, l = abs(reg.width), abs(reg.height), abs(reg.length)
-    reg_valid = (0 <= cand_reg[0] < w) and (0 <= cand_reg[1] < h) and (0 <= cand_reg[2] < l)
-    store_valid = (0 <= cand_store[0] < w) and (0 <= cand_store[1] < h) and (0 <= cand_store[2] < l)
+    w, h, length = abs(reg.width), abs(reg.height), abs(reg.length)
+    reg_valid = (0 <= cand_reg[0] < w) and (0 <= cand_reg[1] < h) and (0 <= cand_reg[2] < length)
+    store_valid = (0 <= cand_store[0] < w) and (0 <= cand_store[1] < h) and (0 <= cand_store[2] < length)
 
     if reg_valid and not store_valid:
         return cand_reg
@@ -201,9 +201,9 @@ def litematic_to_schem_final(
         offset_y = reg.min_schem_y() - global_min_y
         offset_z = reg.min_schem_z() - global_min_z
 
-        x_coords = sorted(list(reg.xrange()))
-        y_coords = sorted(list(reg.yrange()))
-        z_coords = sorted(list(reg.zrange()))
+        x_coords = sorted(list(reg.range_x()))
+        y_coords = sorted(list(reg.range_y()))
+        z_coords = sorted(list(reg.range_z()))
 
         min_x = x_coords[0]
         min_y = y_coords[0]
@@ -320,7 +320,9 @@ def litematic_to_schem_final(
     # Fill any remaining unwritten space between regions with minecraft:air
     if any(idx == -1 for idx in block_indices):
         air_idx = get_or_create_palette_index("minecraft:air")
-        block_indices = [air_idx if idx == -1 else idx for idx in block_indices]
+        for i, idx in enumerate(block_indices):
+            if idx == -1:
+                block_indices[i] = air_idx
 
     if overlap_count > 0:
         print(
