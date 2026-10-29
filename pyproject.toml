@@ -32,6 +32,7 @@ classifiers = [
 dependencies = [
     "litemapy",
     "nbtlib",
+    "numpy",
 ]
 
 [project.urls]
