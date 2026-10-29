@@ -8,7 +8,7 @@ from .converter import (
     decode_varint,
 )
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __all__ = [
     "litematic_to_schem_final",
     "normalize_identifier",

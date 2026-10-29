@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "litematic-to-schematic"
-version = "1.0.0"
+version = "1.0.1"
 description = "Convert Minecraft Litematica (.litematic) schematics directly to WorldEdit Sponge V2 (.schem) format."
 readme = "README.md"
 requires-python = ">=3.8"
